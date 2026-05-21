@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survey: Manuale Interattivo 3D + AI per OEM</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: linear-gradient(135deg, #0D1B2A 0%, #1A3A4A 100%);
+      color: #333;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0D1B2A 0%, #0077A8 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    .progress-bar-container {
+      background: #E0E1DD;
+      height: 6px;
+      width: 100%;
+    }
+
+    .progress-bar {
+      background: #00A8E8;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .section {
+      padding: 40px 30px;
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section h2 {
+      font-size: 22px;
+      color: #0D1B2A;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #F0F1F4;
+      padding-bottom: 10px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: #F8F9FA;
+      border: 1px solid #E9ECEF;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      color: #0077A8;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: #495057;
+      line-height: 1.4;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 15px;
+      color: #1A2530;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .radio-option, .checkbox-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #F8F9FA;
+      border: 1px solid #E9ECEF;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:hover, .checkbox-option:hover {
+      background: #F1F3F5;
+      border-color: #CED4DA;
+    }
+
+    .radio-option input, .checkbox-option input {
+      margin-top: 3px;
+    }
+
+    .radio-option.selected, .checkbox-option.selected {
+      background: #E6F4EA;
+      border-color: #57B857;
+    }
+
+    .pricing-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .pricing-container { grid-template-columns: 1fr; }
+    }
+
+    .pricing-tier {
+      border: 2px solid #E9ECEF;
+      border-radius: 10px;
+      padding: 25px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+      background: #FFF;
+    }
+
+    .pricing-tier:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .pricing-tier.selected {
+      border-color: #0077A8;
+      background: #F4FAFC;
+    }
+
+    .pricing-tier h3 {
+      font-size: 18px;
+      color: #0D1B2A;
+      margin-bottom: 5px;
+    }
+
+    .pricing-tier .price {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0077A8;
+      margin-bottom: 15px;
+    }
+
+    .pricing-tier ul {
+      list-style: none;
+      font-size: 13.5px;
+      color: #495057;
+    }
+
+    .pricing-tier ul li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pricing-tier ul li::before {
+      content: "✓";
+      color: #57B857;
+      font-weight: bold;
+    }
+
+    .input-text, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #CED4DA;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .input-text:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #0077A8;
+      box-shadow: 0 0 0 3px rgba(0, 119, 168, 0.15);
+    }
+
+    .buttons-container {
+      padding: 20px 30px 40px 30px;
+      display: flex;
+      justify-content: space-between;
+      background: #F8F9FA;
+      border-top: 1px solid #E9ECEF;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-prev {
+      background: #E9ECEF;
+      color: #495057;
+    }
+
+    .btn-prev:hover { background: #DEE2E6; }
+
+    .btn-next {
+      background: #0077A8;
+      color: white;
+      margin-left: auto;
+    }
+
+    .btn-next:hover { background: #005F87; }
+
+    .thank-you {
+      text-align: center;
+      padding: 60px 30px;
+    }
+
+    .thank-you h2 {
+      color: #57B857;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .thank-you p {
+      font-size: 16px;
+      color: #495057;
+      line-height: 1.5;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Evoluzione Digitale del Service Post-Vendita OEM</h1>
+    <p>Questionario di validazione tecnologica per produttori di macchine e impianti complessi</p>
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="section active" id="sec1">
+    <h2>1. Il Progetto: Manuale Interattivo 3D + Intelligenza Artificiale</h2>
+    <p style="font-size: 15px; color: #495057; margin-bottom: 25px; line-height: 1.5;">
+      Stiamo sviluppando una piattaforma software B2B dedicata agli **OEM industriali**. Il sistema trasforma i manuali tecnici statici (PDF o cartacei) e i modelli CAD 3D existent nel portale di assistenza intelligente che azzera i tempi di ricerca e abbatte i costi di supporto L1.
+    </p>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>📦 Viewer 3D & Esploso BoM</h3>
+        <p>Visualizzazione web interattiva del macchinario senza installare software, legata direttamente alla distinta base.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🧠 AI Contestuale Vincolata</h3>
+        <p>Un chatbot dedicato per ogni singolo componente. Risposte precise estratte solo dalla documentazione ufficiale, con zero allucinazioni.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🛠️ Step-by-Step Guidati</h3>
+        <p>Procedure di manutenzione e montaggio visive con highlight automatico dei componenti sul modello 3D.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🤝 Onboarding White-Glove</h3>
+        <p>Ci occupiamo di tutto noi: voi ci fornite i PDF e i file CAD attuali, noi ottimizziamo i modelli e istruiamo l'AI. Zero sforzo operativo per il vostro team.</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Sulla base di questa panoramica iniziale, come valuteresti l'utilità potenziale di questa soluzione per la tua azienda?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q0_utility" value="Molto utile"> Molto utile — Risolve problemi che affrontiamo quotidianamente</label>
+        <label class="radio-option"><input type="radio" name="q0_utility" value="Incuriosito"> Interessante — Da valutare in base a costi e modalità di integrazione</label>
+        <label class="radio-option"><input type="radio" name="q0_utility" value="Poco utile"> Poco utile — I nostri sistemi attuali (PDF/portali legacy) sono sufficienti</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec2">
+    <h2>2. Analisi dei Pain Point nel Post-Vendita</h2>
+    
+    <div class="form-group">
+      <label>1. Quali sono le maggiori criticità che riscontrate nella gestione del supporto tecnico e delle manutenzioni? (Max 2 opzioni)</label>
+      <div class="checkbox-group">
+        <label class="checkbox-option"><input type="checkbox" name="q1_pains" value="Tempi di ricerca documentazione"> I tecnici sul campo o i clienti perdono troppo tempo a cercare informazioni nei manuali cartacei/PDF</label>
+        <label class="checkbox-option"><input type="checkbox" name="q1_pains" value="Errori dei junior"> Elevata dipendenza dai tecnici senior; i tecnici junior commettono errori o richiedono costante supervisione</label>
+        <label class="checkbox-option"><input type="checkbox" name="q1_pains" value="Sovraccarico L1"> Il supporto interno L1 viene sommerso da chiamate ripetitive dei clienti finali per problemi banali</label>
+        <label class="checkbox-option"><input type="checkbox" name="q1_pains" value="Costi trasferte"> Costi elevati di trasferte di assistenza all'estero che potevano essere evitate da remoto</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>2. Attualmente, in quale formato fornite la documentazione tecnica e i manuali d'uso ai vostri clienti o tecnici?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q2_format" value="PDF standard"> File PDF standard condivisi via email, USB o portale aziendale semplice</label>
+        <label class="radio-option"><input type="radio" name="q2_format" value="Cartaceo"> Manuali cartacei forniti direttamente a bordo macchina</label>
+        <label class="radio-option"><input type="radio" name="q2_format" value="Portale 3D ricambi"> Portali web avanzati (es. catalogo ricambi 3D) ma privi di assistenza guidata e AI</label>
+        <label class="radio-option"><input type="radio" name="q2_format" value="Altro"> Altro</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec3">
+    <h2>3. Prontezza dei Dati e Workflow Aziendale</h2>
+    
+    <div class="form-group">
+      <label>3. La vostra azienda dispone già di modelli 3D (CAD, STEP, GLTF) per la maggior parte delle macchine prodotte?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q3_3d" value="Sì, completi"> Sì, disponiamo di modelli 3D completi e aggiornati per ogni macchina</label>
+        <label class="radio-option"><input type="radio" name="q3_3d" value="Solo parziali"> Solo per alcuni macchinari o in formati non ottimizzati per il web</label>
+        <label class="radio-option"><input type="radio" name="q3_3d" value="No, solo 2D"> No, lavoriamo prevalentemente con schemi 2D o disegni tecnici piatti</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>4. Quanto spesso i manuali tecnici o le procedure subiscono modifiche o aggiornamenti dopo la vendita?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q4_updates" value="Raramente"> Raramente — Una volta pubblicati rimangono stabili</label>
+        <label class="radio-option"><input type="radio" name="q4_updates" value="Frequentemente"> Frequentemente — Ogni macchina ha personalizzazioni e varianti custom certificate</label>
+        <label class="radio-option"><input type="radio" name="q4_updates" value="In tempo reale"> Costantemente — Inviamo bollettini tecnici di aggiornamento continui</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec4">
+    <h2>4. Funzionalità di Valore ed Esperienza Utente</h2>
+    
+    <div class="form-group">
+      <label>5. Quale aspect della nostra soluzione pensi porterebbe il ROI più alto nel vostro ecosistema di service?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q5_roi" value="Isolamento AI"> L'AI vincolata al singolo componente che azzera il rischio di allucinazioni ed errori di montaggio</label>
+        <label class="radio-option"><input type="radio" name="q5_roi" value="Impatto Visivo 3D"> L'impatto visivo del 3D che semplifica l'onboarding di nuovi tecnici o clienti internazionali</label>
+        <label class="radio-option"><input type="radio" name="q5_roi" value="Support Deflection"> La riduzione drastica del tempo perso dal supporto interno al telefono (Support Deflection)</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>6. Avete preoccupazioni o vincoli specifici riguardo alla sicurezza dei dati industriali o all'adozione da parte dei tecnici?</label>
+      <textarea id="q6_concerns" rows="3" placeholder="Es. Sicurezza IP dei CAD, resistenza all'uso di tablet in officina, conformità GDPR..."></textarea>
+    </div>
+  </div>
+
+  <div class="section" id="sec5">
+    <h2>5. Posizionamento Economico e Collaborazione</h2>
+    
+    <div class="form-group">
+      <label>7. Pensando al valore generato (riduzione downtime, meno trasferte), quale di queste strutture di investimento reputi in linea con il budget aziendale per il Service?</label>
+      
+      <div class="pricing-container">
+        <div class="pricing-tier" onclick="selectTier(this, 'Service Team Base')">
+          <input type="radio" name="q7_pricing" value="Service Team Base" style="position:absolute; top:15px; right:15px;">
+          <h3>🛠️ Service Team Base</h3>
+          <div class="price">€600 - €900 <span style="font-size:12px; color:#666;">/ mese</span></div>
+          <ul>
+            <li>Fino a 3 linee di macchinari core</li>
+            <li>Accesso illimitato per i tecnici interni trasfertisti</li>
+            <li>RAG AI vincolato alla BoM</li>
+            <li>White-Glove Onboarding iniziale</li>
+          </ul>
+        </div>
+        
+        <div class="pricing-tier" onclick="selectTier(this, 'OEM Global Scale')">
+          <input type="radio" name="q7_pricing" value="OEM Global Scale" style="position:absolute; top:15px; right:15px;">
+          <h3>🌍 OEM Global Scale</h3>
+          <div class="price">€1.500 - €2.500 <span style="font-size:12px; color:#666;">/ mese</span></div>
+          <ul>
+            <li>Flotta macchine e asset illimitati</li>
+            <li>**Portale White-Label** con logo OEM per i vostri clienti finali</li>
+            <li>Analytics sulle ricerche dei clienti</li>
+            <li>Piena deflection del supporto L1</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>8. Stiamo selezionando 3 aziende OEM in Italia per avviare un Programma Pilota Gratuito di 30 giorni, digitalizzando un macchinario di punta a nostra cura e spese. Saresti interessato a candidare la tua realtà?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="q8_pilot" value="Sì, demo"> Sì, vorrei vedere una demo del prototipo 3D attuale e approfondire il pilota</label>
+        <label class="radio-option"><input type="radio" name="q8_pilot" value="Solo aggiornamenti"> No al momento, ma vorrei rimanere aggiornato sugli sviluppi del software</label>
+        <label class="radio-option"><input type="radio" name="q8_pilot" value="No"> No, non siamo interessati</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec6">
+    <h2>6. Informazioni di Contatto Professionale</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div class="form-group">
+        <label>Settore Industriale</label>
+        <input type="text" id="q9_industry" class="input-text" placeholder="Es. Packaging, Automazione, Macchine Legno...">
+      </div>
+      <div class="form-group">
+        <label>Dimensione Azienda (Dipendenti)</label>
+        <div class="radio-group" style="gap: 5px; margin-top:5px;">
+          <label style="font-size:14px;"><input type="radio" name="companySize" value="<50"> Meno di 50</label>
+          <label style="font-size:14px;"><input type="radio" name="companySize" value="50-250"> 50 - 250</label>
+          <label style="font-size:14px;"><input type="radio" name="companySize" value=">250"> Oltre 250</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Nome e Cognome</label>
+      <input type="text" id="q11_name" class="input-text">
+    </div>
+    <div class="form-group">
+      <label>Email Aziendale</label>
+      <input type="email" id="q12_email" class="input-text">
+    </div>
+    <div class="form-group">
+      <label>Ruolo in Azienda</label>
+      <input type="text" id="q13_role" class="input-text" placeholder="Es. Responsabile Service, Direttore Operation, CEO...">
+    </div>
+  </div>
+
+  <div class="section" id="secThankYou">
+    <div class="thank-you">
+      <h2>✓ Questionario Completato!</h2>
+      <p>Grazie mille per il tuo tempo prezioso. Le tue risposte sono fondamentali per lo sviluppo della piattaforma.</p>
+      <p style="margin-top: 15px; font-size: 14px; color: #666;" id="pilotNotice"></p>
+    </div>
+  </div>
+
+  <div class="buttons-container" id="buttonsContainer">
+    <button class="btn btn-prev" id="btnPrev" onclick="prevSection()" style="visibility: hidden;">Indietro</button>
+    <button class="btn btn-next" id="btnNext" onclick="nextSection()">Avanti</button>
+  </div>
+</div>
+
+<script>
+  let currentSection = 1;
+  const totalSections = 6;
+
+  function updateProgress() {
+    const percent = ((currentSection - 1) / (totalSections - 1)) * 100;
+    document.getElementById('progressBar').style.width = percent + '%';
+  }
+
+  function showSection(secIdx) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    
+    if(secIdx === 'thankyou') {
+      document.getElementById('secThankYou').classList.add('active');
+      document.getElementById('buttonsContainer').style.display = 'none';
+      document.getElementById('progressBar').style.width = '100%';
+      return;
+    }
+
+    document.getElementById('sec' + secIdx).classList.add('active');
+    
+    if(secIdx === 1) {
+      document.getElementById('btnPrev').style.visibility = 'hidden';
+    } else {
+      document.getElementById('btnPrev').style.visibility = 'visible';
+    }
+
+    if(secIdx === totalSections) {
+      document.getElementById('btnNext').innerText = 'Invia Risposte';
+    } else {
+      document.getElementById('btnNext').innerText = 'Avanti';
+    }
+    
+    updateProgress();
+  }
+
+  function nextSection() {
+    if(validateSection(currentSection - 1)) {
+      if(currentSection < totalSections) {
+        currentSection++;
+        showSection(currentSection);
+        window.scrollTo(0, 0);
+      } else {
+        submitSurvey();
+      }
+    }
+  }
+
+  function prevSection() {
+    if(currentSection > 1) {
+      currentSection--;
+      showSection(currentSection);
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function validateSection(sectionNum) {
+    const sectionEl = document.querySelectorAll('.section')[sectionNum];
+    
+    // Controlla se ci sono radio button obbligatori nella sezione corrente
+    const radios = sectionEl.querySelectorAll('input[type="radio"]');
+    if (radios.length > 0) {
+      const radioGroups = new Set(Array.from(radios).map(r => r.name));
+      
+      for (let groupName of radioGroups) {
+        // Saltiamo la dimensione aziendale in anagrafica per renderla meno bloccante se opzionale
+        if (groupName === 'companySize' || groupName === 'q7_pricing') continue; 
+        
+        if (!document.querySelector(`input[type="radio"][name="${groupName}"]:checked`)) {
+          alert('Per favore, seleziona una delle opzioni disponibili prima di proseguire.');
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  function selectTier(element, value) {
+    element.parentElement.querySelectorAll('.pricing-tier').forEach(t => t.classList.remove('selected'));
+    element.classList.add('selected');
+    element.querySelector('input[type="radio"]').checked = true;
+  }
+
+  function submitSurvey() {
+    const painsSelected = [];
+    document.querySelectorAll('input[name="q1_pains"]:checked').forEach(cb => painsSelected.push(cb.value));
+
+    const data = {
+      utility: document.querySelector('input[name="q0_utility"]:checked')?.value || '',
+      pains: painsSelected,
+      currentFormat: document.querySelector('input[name="q2_format"]:checked')?.value || '',
+      has3DModels: document.querySelector('input[name="q3_3d"]:checked')?.value || '',
+      updateFrequency: document.querySelector('input[name="q4_updates"]:checked')?.value || '',
+      highestRoiAspect: document.querySelector('input[name="q5_roi"]:checked')?.value || '',
+      securityConcerns: document.getElementById('q6_concerns').value,
+      pricingPreference: document.querySelector('input[name="q7_pricing"]:checked')?.value || '',
+      wantsPilot: document.querySelector('input[name="q8_pilot"]:checked')?.value || '',
+      industry: document.getElementById('q9_industry').value,
+      companySize: document.querySelector('input[name="companySize"]:checked')?.value || '',
+      name: document.getElementById('q11_name').value,
+      email: document.getElementById('q12_email').value,
+      role: document.getElementById('q13_role').value,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log('Dati Survey Raccolti:', data);
+
+    if(data.wantsPilot && data.wantsPilot.includes('Sì')) {
+      document.getElementById('pilotNotice').innerText = "Avendo espresso interesse per il programma pilota, verrai ricontattato prioritariamente entro 48 ore per fissare una breve demo di 10 minuti.";
+    }
+
+    // Invio dei dati direttamente al Foglio Google senza passare da terzi
+    fetch('https://script.google.com/macros/s/AKfycbz6GHcoSdJnLIlp5HSm8Xm-ZCmeQLl95Lcqp2c4npPOXABdzE7OJxcTXqvfGnJCQDuu6w/exec', { 
+      method: 'POST',
+      mode: 'no-cors', // Evita il blocco CORS di sicurezza dei browser con le Google Web App
+      headers: {
+        'Content-Type': 'application/json'
+      }, 
+      body: JSON.stringify(data) 
+    })
+    .then(() => {
+      console.log('Dati registrati con successo sul Foglio Google!');
+    })
+    .catch(error => console.error('Errore durante l\'invio:', error));
+
+    showSection('thankyou');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT') {
+      const parent = e.target.closest('.radio-option, .checkbox-option');
+      if (parent) {
+        if (e.target.type === 'radio') {
+          const group = parent.parentElement;
+          group.querySelectorAll('.radio-option, .checkbox-option').forEach(opt => opt.classList.remove('selected'));
+        }
+        if (e.target.checked) {
+          parent.classList.add('selected');
+        } else {
+          parent.classList.remove('selected');
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
